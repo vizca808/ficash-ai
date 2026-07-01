@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  password        String
+  name            String
+  avatar          String?
+  monthlyIncome   Int
+  savingsTarget   Int
+  payday          Int
+  coachingPersona String         @default("ROAST") // ROAST, SUPPORT, ANALYST
+  onboardingDone  Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  transactions    Transaction[]
+  budgets         Budget[]
+  subscriptions   Subscription[]
+  insights        AiInsight[]
+}
+
+model Category {
+  id              String         @id
+  name            String
+  icon            String
+  color           String
+  type            String         // INCOME, EXPENSE
+  sortOrder       Int
+  isDefault       Boolean        @default(true)
+
+  transactions    Transaction[]
+  budgets         Budget[]
+  subscriptions   Subscription[]
+}
+
+model Transaction {
+  id              String         @id @default(cuid())
+  userId          String
+  categoryId      String
+  amount          Int
+  type            String         // INCOME, EXPENSE
+  merchant        String?
+  description     String?
+  date            DateTime
+  source          String         @default("MANUAL") // MANUAL, VOICE, OCR
+  receiptUrl      String?
+  createdAt       DateTime       @default(now())
+
+  user            User           @relation(fields: [userId], references: [id])
+  category        Category       @relation(fields: [categoryId], references: [id])
+}
+
+model Budget {
+  id              String         @id @default(cuid())
+  userId          String
+  categoryId      String
+  monthlyLimit    Int
+  month           Int
+  year            Int
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user            User           @relation(fields: [userId], references: [id])
+  category        Category       @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId, month, year])
+}
+
+model Subscription {
+  id              String         @id @default(cuid())
+  userId          String
+  categoryId      String
+  name            String
+  amount          Int
+  billingCycle    String         @default("MONTHLY") // MONTHLY, YEARLY
+  nextBillingDate DateTime?
+  isActive        Boolean        @default(true)
+  previousAmount  Int?
+  detectedAt      DateTime       @default(now())
+  createdAt       DateTime       @default(now())
+
+  user            User           @relation(fields: [userId], references: [id])
+  category        Category       @relation(fields: [categoryId], references: [id])
+}
+
+model AiInsight {
+  id              String         @id @default(cuid())
+  userId          String
+  type            String         // WEEKLY_REVIEW, SPENDING_ALERT, BUDGET_TIP, SUBSCRIPTION_ALERT, FORECAST
+  title           String
+  content         String         // Markdown content
+  severity        String         @default("INFO") // INFO, WARNING, DANGER, SUCCESS
+  isRead          Boolean        @default(false)
+  periodStart     DateTime?
+  periodEnd       DateTime?
+  createdAt       DateTime       @default(now())
+
+  user            User           @relation(fields: [userId], references: [id])
+}
