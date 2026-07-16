@@ -29,7 +29,7 @@ export default function RegisterPage() {
         throw new Error(data.error || "Gagal membuat akun");
       }
 
-      window.location.href = "/onboarding";
+      window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message);
       setLoading(false);

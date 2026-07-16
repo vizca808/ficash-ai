@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   });
 
   if (!user) redirect("/login");
-  if (!user.onboardingDone) redirect("/onboarding");
+
 
   // Fetch transactions for current month
   const today = new Date();

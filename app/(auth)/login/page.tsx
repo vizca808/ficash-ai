@@ -28,11 +28,7 @@ export default function LoginPage() {
         throw new Error(data.error || "Login gagal");
       }
 
-      if (data.onboardingDone) {
-        window.location.href = "/dashboard";
-      } else {
-        window.location.href = "/onboarding";
-      }
+      window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
