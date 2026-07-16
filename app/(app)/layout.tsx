@@ -34,9 +34,7 @@ export default function AppLayout({
             🤖 AI Insights
             <span className="absolute top-3 right-4 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6] animate-pulse"></span>
           </Link>
-          <Link href="/budget" className="block px-4 py-3 rounded-xl hover:bg-slate-800/80 transition-all hover:translate-x-1 font-medium">
-            💰 Anggaran
-          </Link>
+
         </nav>
         <div className="p-4 border-t border-slate-700/50">
           <Link href="/settings" className="block w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800/80 transition-all hover:translate-x-1 text-slate-400 font-medium">
@@ -63,10 +61,7 @@ export default function AppLayout({
           <span className="text-lg mb-1">💸</span>
           Transaksi
         </Link>
-        <Link href="/budget" className="flex flex-col items-center text-[10px] text-slate-400 hover:text-white transition-colors">
-          <span className="text-lg mb-1">💰</span>
-          Anggaran
-        </Link>
+
         <Link href="/statistics" className="flex flex-col items-center text-[10px] text-slate-400 hover:text-white transition-colors">
           <span className="text-lg mb-1">📈</span>
           Statistik

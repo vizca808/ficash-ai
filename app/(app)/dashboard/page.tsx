@@ -2,7 +2,7 @@ import prisma from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import DashboardAlerts from "./DashboardAlerts";
+
 
 export const dynamic = 'force-dynamic';
 
@@ -47,12 +47,16 @@ export default async function DashboardPage() {
     .filter(tx => tx.type === 'INCOME')
     .reduce((sum, tx) => sum + tx.amount, 0);
 
-  // Carry-over: net balance from ALL previous months  
+  // Last month expense
+  const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+  const lastMonthExpense = prevMonthTx
+    .filter(tx => tx.type === 'EXPENSE' && new Date(tx.date) >= lastMonthStart)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+
+  // Total balance = net balance from ALL previous months + this month's net
   const carryOver = prevMonthTx.reduce((sum, tx) => {
     return sum + (tx.type === 'INCOME' ? tx.amount : -tx.amount);
   }, 0);
-
-  // Total balance = carry-over sisa bulan lalu + saldo bulan ini
   const totalBalance = carryOver + income - spent;
   
   // Current month name for display
@@ -137,11 +141,11 @@ export default async function DashboardPage() {
               <p className="text-[10px] text-slate-400 mb-1 uppercase tracking-wider font-semibold">Pengeluaran ⬆</p>
               <p className="text-sm font-bold text-red-400">Rp {spent.toLocaleString("id-ID")}</p>
             </div>
-            {carryOver !== 0 && (
+            {lastMonthExpense > 0 && (
               <div>
-                <p className="text-[10px] text-slate-400 mb-1 uppercase tracking-wider font-semibold">Sisa Bln Lalu 🏦</p>
-                <p className={`text-sm font-bold ${carryOver >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                  Rp {carryOver.toLocaleString("id-ID")}
+                <p className="text-[10px] text-slate-400 mb-1 uppercase tracking-wider font-semibold">Pengeluaran Bln Lalu 📉</p>
+                <p className="text-sm font-bold text-red-400">
+                  Rp {lastMonthExpense.toLocaleString("id-ID")}
                 </p>
               </div>
             )}
@@ -155,14 +159,7 @@ export default async function DashboardPage() {
 
 
 
-  {/* Fetch Alerts for Budgets and Subscriptions */}
-  {(() => {
-    return (
-      <div className="space-y-3">
-        <DashboardAlerts userId={user.id} categoryTotals={categoryTotals} />
-      </div>
-    );
-  })()}
+
 
   {/* Expense Chart */}
       {spent > 0 && (
