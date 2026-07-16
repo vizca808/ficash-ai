@@ -61,7 +61,13 @@ export default function AppLayout({
           <span className="text-lg mb-1">💸</span>
           Transaksi
         </Link>
-
+        <Link href="/insights" className="flex flex-col items-center text-[10px] text-slate-400 hover:text-white transition-colors">
+          <span className="text-lg mb-1 relative">
+            🤖
+            <span className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6] animate-pulse"></span>
+          </span>
+          AI Insights
+        </Link>
         <Link href="/statistics" className="flex flex-col items-center text-[10px] text-slate-400 hover:text-white transition-colors">
           <span className="text-lg mb-1">📈</span>
           Statistik
